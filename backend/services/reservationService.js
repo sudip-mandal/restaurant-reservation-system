@@ -1,7 +1,7 @@
 const Table = require('../models/Table');
 const Reservation = require('../models/Reservation');
 
-const assignTable = async (reservationDate, timeSlot, guests) => {
+const assignTable = async (reservationDate, timeSlot, guests, excludeReservationId = null) => {
   // Query all tables, sorted by capacity ascending to optimize seating
   const allTables = await Table.find().sort({ capacity: 1 });
 
@@ -13,11 +13,17 @@ const assignTable = async (reservationDate, timeSlot, guests) => {
   }
 
   // Get all confirmed reservations for this exact date and time slot
-  const conflictingReservations = await Reservation.find({
+  const query = {
     reservationDate,
     timeSlot,
     status: 'confirmed',
-  });
+  };
+
+  if (excludeReservationId) {
+    query._id = { $ne: excludeReservationId };
+  }
+
+  const conflictingReservations = await Reservation.find(query);
 
   const bookedTableIds = conflictingReservations.map((res) => res.table.toString());
 

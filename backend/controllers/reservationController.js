@@ -80,15 +80,41 @@ const updateReservation = async (req, res, next) => {
       throw new Error('Reservation not found');
     }
 
-    // Admins can update any details.
+    const { reservationDate, timeSlot, guests } = req.body;
+
+    // Use current values if they are not provided in the update body
+    const updateData = {
+      reservationDate: reservationDate || reservation.reservationDate,
+      timeSlot: timeSlot || reservation.timeSlot,
+      guests: guests || reservation.guests,
+    };
+
+    // 1. Validation
+    const validData = await validateReservationInput(updateData.reservationDate, updateData.timeSlot, updateData.guests);
+
+    // 2. Assign Table (exclude this reservation id from conflicts)
+    const assignedTable = await assignTable(validData.parsedDate, validData.timeSlot, validData.guests, req.params.id);
+
+    // 3. Update data
+    const finalUpdate = {
+      ...req.body,
+      reservationDate: validData.parsedDate,
+      timeSlot: validData.timeSlot,
+      guests: validData.guests,
+      table: assignedTable._id,
+    };
+
     const updatedReservation = await Reservation.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      finalUpdate,
       { new: true, runValidators: true }
     );
 
     res.json(updatedReservation);
   } catch (error) {
+    if (!res.statusCode || res.statusCode === 200) {
+      res.status(error.status || 400); 
+    }
     next(error);
   }
 };

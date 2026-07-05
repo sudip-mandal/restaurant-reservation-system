@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
+import AdminLogin from './pages/AdminLogin';
 import Register from './pages/Register';
 import MyReservations from './pages/MyReservations';
 import AdminReservations from './pages/AdminReservations';
@@ -32,6 +33,7 @@ function AppRoutes() {
       <div className="container">
         <Routes>
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+          <Route path="/admin/login" element={!user ? <AdminLogin /> : <Navigate to="/" />} />
           <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
           
           <Route 
