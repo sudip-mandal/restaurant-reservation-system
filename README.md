@@ -2,18 +2,71 @@
 
 A complete MERN stack web application for managing restaurant table reservations. Built in accordance with the intern assignment requirements.
 
+## Technology Stack
+
+**Frontend**
+- React
+- Vite
+- React Router DOM
+- Axios
+- CSS
+
+**Backend**
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT
+- bcryptjs
+
+**Development Tools**
+- Git
+- npm
+
 ## Features
 
 - **Authentication**: JWT-based login and registration with bcrypt hashed passwords.
 - **Customer Portal**:
+  - Register and Login.
   - View personal upcoming and historical reservations.
   - Book a table by selecting a date, predefined time slot, and guest count.
-  - Automatic, optimized table assignment preventing double bookings and capacity issues.
   - Soft cancel own reservations.
 - **Admin Portal**:
+  - Dedicated Admin Login route.
   - View all reservations system-wide.
   - Filter reservations by specific dates.
+  - Update/Edit existing reservations.
   - Soft cancel any reservation.
+- **Business Logic**:
+  - Automatic table assignment.
+  - Capacity validation.
+  - Double-booking prevention.
+  - Conflict detection.
+  - Automatic table reassignment during updates.
+
+## Project Structure
+
+```text
+restaurant-reservation-system/
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── services/
+│   ├── validators/
+│   ├── server.js
+│   └── package.json
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   └── vite.config.js
+│
+└── README.md
+```
 
 ## Setup & Installation
 
@@ -21,11 +74,17 @@ A complete MERN stack web application for managing restaurant table reservations
 - Node.js (v18+)
 - MongoDB Atlas account (or local MongoDB server)
 
-### 1. Database Setup
+### 1. Clone Repository
+```bash
+git clone https://github.com/sudip-mandal/restaurant-reservation-system.git
+cd restaurant-reservation-system
+```
+
+### 2. Database Setup
 1. Create a MongoDB database.
 2. Obtain the connection string URI.
 
-### 2. Backend Setup
+### 3. Backend Setup
 ```bash
 cd backend
 npm install
@@ -48,9 +107,9 @@ Start the backend server:
 npm run dev
 ```
 
-### 3. Frontend Setup
+### 4. Frontend Setup
 ```bash
-cd frontend
+cd ../frontend
 npm install
 ```
 Create a `.env` file in the `frontend/` directory:
@@ -61,6 +120,19 @@ Start the frontend development server:
 ```bash
 npm run dev
 ```
+
+## API Overview
+
+| Scope | Method | Endpoint | Description |
+| :--- | :--- | :--- | :--- |
+| **Authentication** | POST | `/api/auth/register` | Register a new customer |
+| | POST | `/api/auth/login` | Login and receive JWT |
+| **Customer** | POST | `/api/reservations` | Create a new reservation |
+| | GET | `/api/reservations/me` | Get logged-in user's reservations |
+| | PATCH | `/api/reservations/:id/cancel` | Cancel own reservation |
+| **Admin** | GET | `/api/reservations` | Get all reservations |
+| | PUT | `/api/reservations/:id` | Update/Edit a reservation |
+| | PATCH | `/api/reservations/:id/cancel` | Cancel any reservation |
 
 ## Assumptions & Design Decisions
 - **Single Restaurant**: The system assumes a single physical location.
