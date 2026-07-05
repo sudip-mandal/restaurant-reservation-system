@@ -14,7 +14,7 @@ const AdminLogin = () => {
     setError('');
     try {
       await adminLogin(email, password);
-      navigate('/admin');
+      navigate('/');
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Login failed');
     }
